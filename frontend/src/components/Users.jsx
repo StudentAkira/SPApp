@@ -18,7 +18,7 @@ export const Users = () => {
             <div>
                 {users.map((user, index) => { return (
                     <>
-                        <Link to={'/users/'+user.id} key={index}>{user.username}</Link><br/>
+                        <Link to={'/users/user'+user.id} key={index}>{user.username}</Link><br/>
                     </>
                 );})}
             </div>
