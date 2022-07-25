@@ -22,12 +22,14 @@ function App() {
 
         async function setAuth(token){
             if (!token){
+                dispatch({type:'SET_LOADING', payload:false})
+                dispatch({type:'SET_ID', payload:false})
                 return
             }
             const getId = await axios.get(
                 'http://127.0.0.1:8000/me',{
                     headers:{
-                        Authorization: 'Token 5d3c2ec23d9c1fff3719c7dfafb11a38a87a08de',
+                        Authorization: 'Token '+token,
                         'Content-Type': 'application/json',
                     }
                 }

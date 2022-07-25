@@ -14,7 +14,7 @@ const initialState = {
     token: token,
     userId: userId,
     isAuthenticated: isAuthenticated,
-    isLoading:isLoading,
+    isLoading:isLoading
 }
 
 
