@@ -5,8 +5,10 @@ import {
   Route,
   Link,
 } from "react-router-dom";
+import {MypageLink} from './components/MypageLink'
 import {Mypage} from './components/Mypage'
 import {Login} from './components/Login'
+import {Logout} from './components/Logout'
 import {Registrate} from './components/Registrate'
 import {Users} from './components/Users'
 import {User} from './components/User'
@@ -21,14 +23,14 @@ function App() {
         const auth = useSelector(state => state.auth)
         const cookies = new Cookies();
 
-        const [test, setTest] = useState(0)
-
+        const token = document.URL.split('token=')[1]
+        auth.token = token
         async function getAuth(token){
             if(!token){
                 dispatch({type:'SET_LOADING', payload:false})
                 return
             }
-            const get = await axios.get(
+            const response = await axios.get(
                 'http://127.0.0.1:8000/me',
                 {
                         headers:
@@ -39,9 +41,11 @@ function App() {
                 }
         )
             dispatch({type:'SET_LOADING', payload:false})
-            dispatch({type:'SET_ID', payload:get.data.userId})
-            if (get.data.userId!=-1){
+            dispatch({type:'SET_ID', payload:response.data.userId})
+            if (response.data.userId!=-1){
                 dispatch({type:'SET_AUTH', payload:true})
+                dispatch({type:'SET_TOKEN', payload:token})
+                cookies.set('token', token)
             }
         }
         if (auth.isLoading){
@@ -50,9 +54,11 @@ function App() {
         }else{
             return (
                 <BrowserRouter>
-                    <Mypage isAuth={auth.isAuthenticated}/>
+                    <MypageLink/>
                     <Link to='users'>Users</Link>
                     <Routes>
+                        <Route path='/me' element={<Mypage />}/>}/>
+                        <Route path='/logout' element={<Logout/>}/>
                         <Route path='/login' element={<Login/>}/>
                         <Route path='/registrate' element={<Registrate/>}/>
                         <Route path='/users' element={<Users/>}/>

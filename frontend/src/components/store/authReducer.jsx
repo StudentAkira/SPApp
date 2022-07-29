@@ -8,11 +8,8 @@ let token = cookies.get('token')? cookies.get('token'):false
 let userId = -1
 let isAuthenticated = false
 let isLoading = true
-let username = ''
+let username = 'default'
 
-
-
-console.log(token)
 
 const initialState = {
     token: token,
