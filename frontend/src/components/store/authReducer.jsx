@@ -5,16 +5,21 @@ const cookies = new Cookies();
 
 
 let token = cookies.get('token')? cookies.get('token'):false
-let userId = false
-let isAuthenticated = userId?true:false
+let userId = -1
+let isAuthenticated = false
 let isLoading = true
+let username = ''
 
+
+
+console.log(token)
 
 const initialState = {
     token: token,
     userId: userId,
     isAuthenticated: isAuthenticated,
-    isLoading:isLoading
+    isLoading:isLoading,
+    username: username,
 }
 
 
@@ -26,6 +31,7 @@ export const authReducer = (state = initialState, action ) => {
         case 'SET_AUTH': return {...state, isAuthenticated: action.payload }
         case 'SET_ID': return {...state, userId: action.payload}
         case 'SET_LOADING': return {...state, isLoading: action.payload}
+        case 'SET_USERNAME': return {...state, username: action.payload}
         default:
             return state
     }

@@ -5,6 +5,7 @@ import {
   Route,
   Link,
 } from "react-router-dom";
+import {Mypage} from './components/Mypage'
 import {Login} from './components/Login'
 import {Registrate} from './components/Registrate'
 import {Users} from './components/Users'
@@ -20,47 +21,42 @@ function App() {
         const auth = useSelector(state => state.auth)
         const cookies = new Cookies();
 
-        async function setAuth(token){
-            if (!token){
+        const [test, setTest] = useState(0)
+
+        async function getAuth(token){
+            if(!token){
                 dispatch({type:'SET_LOADING', payload:false})
-                dispatch({type:'SET_ID', payload:false})
                 return
             }
-            const getId = await axios.get(
-                'http://127.0.0.1:8000/me',{
-                    headers:{
-                        Authorization: 'Token '+token,
-                        'Content-Type': 'application/json',
-                    }
+            const get = await axios.get(
+                'http://127.0.0.1:8000/me',
+                {
+                        headers:
+                        {
+                            'Content-Type':'application/json',
+                            'Authorization': 'Token '+token
+                        }
                 }
-            )
-            dispatch({type:'SET_ID', payload:getId.data.userId})
+        )
             dispatch({type:'SET_LOADING', payload:false})
+            dispatch({type:'SET_ID', payload:get.data.userId})
+            if (get.data.userId!=-1){
+                dispatch({type:'SET_AUTH', payload:true})
+            }
         }
-
-        useEffect(async () => {
-              const data = await setAuth(auth.token);
-         }, []);
-
-
         if (auth.isLoading){
+            getAuth(auth.token)
             return <h1>LOADING</h1>
         }else{
-            if(auth.userId){
-                console.log('YEAH', auth.userId)
-            }else{
-                console.log('NOPE', auth.userId)
-            }
             return (
                 <BrowserRouter>
-                    <Link to='login'>Login</Link>
-                    <Link to='registrate'>Registrate</Link>
+                    <Mypage isAuth={auth.isAuthenticated}/>
                     <Link to='users'>Users</Link>
                     <Routes>
                         <Route path='/login' element={<Login/>}/>
                         <Route path='/registrate' element={<Registrate/>}/>
                         <Route path='/users' element={<Users/>}/>
-                        <Route path='users/user:uid' element={<User/>}/>
+                        <Route path='users/user/:uid' element={<User/>}/>
                     </Routes>
                 </BrowserRouter>
         );
