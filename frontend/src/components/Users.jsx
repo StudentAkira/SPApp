@@ -6,7 +6,6 @@ import {
   Link,
 } from "react-router-dom";
 import {Login} from './Login'
-import {Registrate} from './Registrate'
 import {User} from './User'
 import {Loading} from './Loading'
 import { useDispatch, useSelector } from 'react-redux'
