@@ -11,38 +11,38 @@ import {Loading} from './Loading'
 import { useDispatch, useSelector } from 'react-redux'
 import axios from 'axios'
 
-export const Users = () => {
+export const Posts = () => {
 
     const [loading, setLoading] = useState(true)
-    const [users, setUsers] = useState([])
+    const [posts, setPosts] = useState([])
     const [pagenumber, setPagenumber] = useState(1)
     const [pagesize, setPagesize] = useState(20)
     const [totalcount, setTotalcount] = useState(pagesize)
     const [maxcount, setMaxcount] = useState(0)
-    const [allusersloaded, setAllusersloaded] = useState(false)
+    const [allpostsloaded, setAllpostsloaded] = useState(false)
 
-    async function getUsers(){
-        const UsersData = await axios.get('http://127.0.0.1:8000/users/'+pagenumber,)
-        UsersData.data.UsersData.map(user => {users.push(user)})
+    async function getPosts(){
+        const PostsData = await axios.get('http://127.0.0.1:8000/posts/'+pagenumber,)
+        PostsData.data.PostsData.map(post => {posts.push(post)})
         setLoading(false)
     }
 
     useEffect(()=>{
-        async function getUsers(){
-            const UsersData = await axios.get('http://127.0.0.1:8000/users/'+pagenumber,)
-            UsersData.data.UsersData.map(user => {users.push(user)})
-            if (UsersData.data.UsersData.length < pagesize){
-                setAllusersloaded(true)
+        async function getPosts(){
+            const PostsData= await axios.get('http://127.0.0.1:8000/posts/'+pagenumber,)
+            PostsData.data.PostsData.map(post => {posts.push(post)})
+            if (PostsData.data.PostsData.length < pagesize){
+                setAllpostsloaded(true)
                 setLoading(false)
                 return
             }
             setLoading(false)
             setPagenumber(pagenumber+1)
-            setTotalcount(totalcount+UsersData.data.UsersData.length)
-            setMaxcount(UsersData.data.AmountOfUsers)
+            setTotalcount(totalcount+PostsData.data.PostsData.length)
+            setMaxcount(PostsData.data.AmountOfPosts)
         }
         if(loading){
-            getUsers()
+            getPosts()
         }
     },[loading])
 
@@ -54,7 +54,7 @@ export const Users = () => {
     })
 
     function scrollHandler (e){
-        if (e.target.documentElement.scrollHeight - (e.target.documentElement.scrollTop + window.innerHeight) < 100 && !allusersloaded){
+        if (e.target.documentElement.scrollHeight - (e.target.documentElement.scrollTop + window.innerHeight) < 100 && !allpostsloaded){
             setLoading(true)
         }
     }
@@ -63,8 +63,8 @@ export const Users = () => {
 
     return (
         <div>
-            <h1>{users.map((user, index) =>
-            <Link to={'user/'+user[0].id} key={index+1}>{user[0].username}<br/></Link>
+            <h1>{posts.map((post, index) =>
+            <Link to={'post/'+post[0].id} key={index+1}>{post[0].article}<br/></Link>
             )}</h1>
             <Loading visible={loading}/>
         </div>

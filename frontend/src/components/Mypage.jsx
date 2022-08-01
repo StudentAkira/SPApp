@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import {useParams, Navigate} from "react-router-dom";
+import {useParams, Navigate, Link} from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux'
 import { Cookies } from 'react-cookie';
 import axios from 'axios'
@@ -14,6 +14,9 @@ export const Mypage = () => {
     const cookies = new Cookies();
 
     useEffect(()=>{
+        if(!auth.isAuthenticated){
+            document.location.href = 'login'
+        }
         async function getUserData(){
             const userData = await  axios.get(
                 'http://127.0.0.1:8000/user/'+auth.userId+'/',
@@ -44,7 +47,7 @@ export const Mypage = () => {
         formData.append('avatar', avatar);
         axios({
           method: 'post',
-          url: 'http://127.0.0.1:8000/test/',
+          url: 'http://127.0.0.1:8000/changeavatar/',
           data: formData,
           headers: {
             'content-type': 'multipart/form-data',
@@ -59,12 +62,15 @@ export const Mypage = () => {
     }else{
         let avatar_url = 'http://127.0.0.1:8000/media/'+data.data.avatar
         return (
-            <div style={{display:'flex', marginTop:'20px'}}>
-                <img src={avatar_url} alt="" style={{width:'10%'}}/>
-                <div style={{fontSize:'25px', marginLeft:'20px'}}>{data.data.username}</div>
-                <button onClick={()=>{Upload()}}>Change Avatar</button>
-                <input type="file" onChange={(e)=>{setAvatar(e.target.files[0])}}/>
-                <a onClick={()=>{Logout()}}>Logout</a>
+            <div>
+                <div style={{display:'flex', marginTop:'20px'}}>
+                    <img src={avatar_url} alt="" style={{width:'10%'}}/>
+                    <div style={{fontSize:'25px', marginLeft:'20px'}}>{data.data.username}</div>
+                    <button onClick={()=>{Upload()}}>Change Avatar</button>
+                    <input type="file" onChange={(e)=>{setAvatar(e.target.files[0])}}/>
+                    <a onClick={()=>{Logout()}}>Logout</a>
+                </div>
+                <Link to='/newpost'>Create new post</Link>
             </div>
         );
     }
