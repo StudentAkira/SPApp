@@ -11,6 +11,7 @@ import {Login} from './components/Login'
 import {Users} from './components/Users'
 import {Posts} from './components/Posts'
 import {User} from './components/User'
+import {Post} from './components/Post'
 import {Postcreator} from './components/Postcreator'
 import { useDispatch, useSelector } from 'react-redux'
 import { Cookies } from 'react-cookie';
@@ -68,6 +69,7 @@ function App() {
                         <Route path='/users' element={<Users/>}/>
                         <Route path='users/user/:uid' element={<User/>}/>
                         <Route path='/posts' element={<Posts/>}/>
+                        <Route path='posts/post/:pid' element={<Post/>}/>
                         <Route path='/newpost' element={<Postcreator/>}/>
                     </Routes>
                 </BrowserRouter>
