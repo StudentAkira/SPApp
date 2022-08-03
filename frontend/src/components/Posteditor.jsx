@@ -9,8 +9,8 @@ export const Posteditor = () => {
     const auth = useSelector(state => state.auth)
     const [postdata, setPostData] = useState()
     const [loading, setLoading] = useState(true)
-    const [images, setImages] = useState([])
-    const [newimage, setNewimage] = useState([])
+    const [images, setImages] = useState([, , , , , ])
+    const [newimages, setNewimages] = useState([, , , , , ])
     const [rerender, setRerender] = useState(true)
     const [article, setArticle] = useState('NO article')
     const [text, setText] = useState('')
@@ -28,25 +28,8 @@ export const Posteditor = () => {
             ImagesLocations += ImageLocation+','
         }
         MainTexts += (document.getElementsByClassName('userstext'))[(document.getElementsByClassName('userstext')).length-1].value
-        let formData = new FormData();
-        formData.append('ImageLocations', ImagesLocations);
-        formData.append('text', MainTexts)
-        formData.append('article', article)
 
-        async function sendPost(formData){
-            const response = await axios({
-              method: 'post',
-              url: 'http://127.0.0.1:8000/editpost/'+{pid}+'/',
-              data: formData,
-              headers: {
-                'content-type': 'multipart/form-data',
-                'Authorization': 'Token '+auth.token
-              }
-            })
-            console.log(response)
-        }
-
-        console.log(MainTexts, ImagesLocations, images)
+        console.log(MainTexts,ImagesLocations,newimages)
     }
 
     function resize(e){
@@ -117,8 +100,8 @@ export const Posteditor = () => {
                             </textarea>
                             <br/>
                             {
-                                newimage[index]?<img
-                                  src={URL.createObjectURL(newimage[index])}
+                                newimages[index]?<img
+                                  src={URL.createObjectURL(newimages[index])}
                                   style={{width:'100px', height:'100px'}}
                                 />:<img
                                     style={{width:'100px', height:'100px'}}
@@ -129,9 +112,9 @@ export const Posteditor = () => {
                             type="file"
                             onChange={(e)=>{
                                 if(images.length == 0){
-                                    setNewimage([...newimage, e.target.files[0]])
+                                    newimages[0] = e.target.files[0]
                                 }else{
-                                    newimage[index] = e.target.files[0]
+                                    newimages[index] = e.target.files[0]
                                     setRerender(!rerender)
                                 }
 
@@ -145,6 +128,7 @@ export const Posteditor = () => {
                     onChange={resize}
                     className='userstext'>
                 </textarea>
+                <button onClick={upload}>CHECK</button>
             </div>
         )
     }
