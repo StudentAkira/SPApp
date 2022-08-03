@@ -13,6 +13,7 @@ import {Posts} from './components/Posts'
 import {User} from './components/User'
 import {Post} from './components/Post'
 import {Postcreator} from './components/Postcreator'
+import {Posteditor} from './components/Posteditor'
 import { useDispatch, useSelector } from 'react-redux'
 import { Cookies } from 'react-cookie';
 import axios from 'axios'
@@ -28,7 +29,6 @@ function App() {
         useEffect(()=>{
             async function getAuth(){
                 let token = auth.token?auth.token:document.URL.split('token=')[1]
-                console.log(token)
                 if(!token){
                     return
                 }
@@ -71,6 +71,7 @@ function App() {
                         <Route path='/posts' element={<Posts/>}/>
                         <Route path='posts/post/:pid' element={<Post/>}/>
                         <Route path='/newpost' element={<Postcreator/>}/>
+                        <Route path='/editpost/:pid' element={<Posteditor/>}/>
                     </Routes>
                 </BrowserRouter>
         );

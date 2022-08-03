@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import {useParams, Navigate, Link} from "react-router-dom";
-import {useSelector } from 'react-redux'
+import {useSelector} from 'react-redux'
 import {Mypage} from './Mypage'
 import axios from 'axios'
 
@@ -13,7 +13,7 @@ export const Post = (props) => {
 
         var UserExists = true
 
-        let {pid} = useParams()
+        const {pid} = useParams()
 
         async function getPostData(){
             const PostData = await  axios.get(
@@ -56,7 +56,6 @@ export const Post = (props) => {
                         let tmp = previous
                         next = image_item[1]
                         previous = next
-                        console.log(tmp, next, text, images)
                         return (
                             <div style={{margin:'auto', textAlign:'center'}}>
                                 <p>

@@ -8,7 +8,6 @@ export const Postcreator = () => {
 
     const auth = useSelector(state => state.auth)
     const [images, setImages] = useState([])
-    const [text, setText] = useState([])
     const [article, setArticle] = useState('NO article')
     const [rerender, setRerender] = useState(true)
 
@@ -35,7 +34,7 @@ export const Postcreator = () => {
         async function sendPost(formData){
             const response = await axios({
               method: 'post',
-              url: 'http://127.0.0.1:8000/test/',
+              url: 'http://127.0.0.1:8000/createpost/',
               data: formData,
               headers: {
                 'content-type': 'multipart/form-data',
@@ -54,7 +53,6 @@ export const Postcreator = () => {
             (document.getElementsByClassName('userstext'))[i].style.height = "5px";
             (document.getElementsByClassName('userstext'))[i].style.height = ((document.getElementsByClassName('userstext'))[i].scrollHeight)+"px";
         }
-        setText(e.target.value)
     }
 
     useEffect(()=>{
@@ -95,6 +93,7 @@ export const Postcreator = () => {
                     }}/><br/>
                     <div>
                     {images.map((image, index)=>{
+                        console.log(image)
                         return (
                             <div>
                                 <img
