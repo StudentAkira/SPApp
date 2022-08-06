@@ -9,8 +9,8 @@ export const Posteditor = () => {
     const auth = useSelector(state => state.auth)
     const [postdata, setPostData] = useState()
     const [loading, setLoading] = useState(true)
-    const [images, setImages] = useState([, , , , , ])
-    const [newimages, setNewimages] = useState([, , , , , ])
+    const [images, setImages] = useState([])
+    const [newimages, setNewimages] = useState([])
     const [rerender, setRerender] = useState(true)
     const [article, setArticle] = useState('NO article')
     const [text, setText] = useState('')
@@ -20,16 +20,44 @@ export const Posteditor = () => {
 
     function upload(){
         let MainTexts = []
-        let ImagesLocations = []
-        let ImageLocation = 0
+        let ImageOrderNumbers = []
+        let ImagePositions = []
+        let ImagePosition = 0
         for (var i = 0; i < (document.getElementsByClassName('userstext')).length-1; i++) {
             MainTexts += (document.getElementsByClassName('userstext'))[i].value
-            ImageLocation += (document.getElementsByClassName('userstext'))[i].value.length
-            ImagesLocations += ImageLocation+','
+            ImagePosition += (document.getElementsByClassName('userstext'))[i].value.length
+            ImagePositions.push(ImagePosition)
         }
         MainTexts += (document.getElementsByClassName('userstext'))[(document.getElementsByClassName('userstext')).length-1].value
 
-        console.log(MainTexts,ImagesLocations,newimages)
+        const formData = new FormData()
+
+        formData.append('text', MainTexts)
+        formData.append('article', article)
+        formData.append('image_postitions', ImagePositions)
+        for (var i = 0; i < newimages.length; i++){
+            if(!newimages[i]){
+                continue
+            }
+            ImageOrderNumbers.push(i)
+            formData.append(i, newimages[i]);
+        }
+        formData.append('images_order_numbers', ImageOrderNumbers)
+
+        async function sendPost(formData){
+            const response = await axios({
+              method: 'post',
+              url: 'http://127.0.0.1:8000/editpost/'+pid+'/',
+              data: formData,
+              headers: {
+                'content-type': 'multipart/form-data',
+                'Authorization': 'Token '+auth.token
+              }
+            })
+        }
+        sendPost(formData)
+
+        console.log(MainTexts,ImagePositions,newimages)
     }
 
     function resize(e){
@@ -42,7 +70,9 @@ export const Posteditor = () => {
 
     useEffect(()=>{
         if(!auth.isAuthenticated){
-            document.location.href = '/login'
+            return (
+                <Navigate to='/login'/>
+            )
         }
         async function getPostData(){
             const PostData = await  axios.get(
@@ -60,7 +90,6 @@ export const Posteditor = () => {
             setArticle(PostData.data.PostData.article)
             setText(PostData.data.PostData.text)
             setImages([...images,PostData.data.images])
-            console.log(PostData, PostData.data.PostData.text, PostData.data.PostData.article)
         }
         if(loading){
             getPostData()
@@ -73,6 +102,11 @@ export const Posteditor = () => {
             <h1>LOADING</h1>
         )
     }else{
+        if(auth.userId != postdata.data.OwnerData.id){
+            return (
+                <Navigate to='/me'/>
+            )
+        }
         let tmp = 0
         let previous = 0
         let next = text.length

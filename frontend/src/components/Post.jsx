@@ -28,7 +28,7 @@ export const Post = (props) => {
             return <h1>LOADING</h1>
         }else{
             UserExists = PostData.data.OwnerData.exists
-            let user_id = UserExists?PostData.data.OwnerData.id:-1
+            let owner_id = UserExists?PostData.data.OwnerData.id:-1
             let avatar_url = UserExists?'http://127.0.0.1:8000/media/'+PostData.data.OwnerData.avatar:''
             let username = UserExists?PostData.data.OwnerData.username:''
             let rating = UserExists?PostData.data.OwnerData.rating:''
@@ -44,11 +44,12 @@ export const Post = (props) => {
                 >
                     <img src={avatar_url} alt="" style={{width:'100px', height:'100px', borderRadius:'100%'}}/>
                     <h2 style={{marginLeft:'30px'}}>
-                        <Link to={'/users/user/'+user_id}>{username} </Link>
+                        <Link to={'/users/user/'+owner_id}>{username} </Link>
                         rating : {rating}
 
                     </h2>
                 </div>
+                {auth.userId==owner_id?<Link to={'/editpost/'+PostData.data.PostData.id}>EditPost</Link>:null}
                 <hr style={{display: UserExists?'auto':'none'}}/>
                 <h2>{article}</h2><br/>
                 <div style={{width:'60%', margin:'auto',}}>

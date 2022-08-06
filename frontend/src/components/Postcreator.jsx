@@ -57,7 +57,9 @@ export const Postcreator = () => {
 
     useEffect(()=>{
         if(!auth.isAuthenticated){
-            document.location.href = 'login'
+            return (
+                <Navigate to='/login' />
+            )
         }
     },[])
 

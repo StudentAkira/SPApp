@@ -14,9 +14,7 @@ export const Mypage = () => {
     const cookies = new Cookies();
 
     useEffect(()=>{
-        if(!auth.isAuthenticated){
-            document.location.href = 'login'
-        }
+
         async function getUserData(){
             const userData = await  axios.get(
                 'http://127.0.0.1:8000/user/'+auth.userId+'/',
@@ -39,7 +37,11 @@ export const Mypage = () => {
         dispatch({type:'SET_ID', payload:-1})
         cookies.remove('token')
         cookies.remove('userId')
-        document.location.href = 'login'
+        cookies.remove('csrftoken')
+        cookies.remove('sessionid')
+        return (
+            <Navigate to='/login'/>
+        )
     }
 
     function Upload(){

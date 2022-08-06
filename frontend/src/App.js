@@ -12,6 +12,7 @@ import {Users} from './components/Users'
 import {Posts} from './components/Posts'
 import {User} from './components/User'
 import {Post} from './components/Post'
+import {PrivateRoute} from './components/PrivateRoute'
 import {Postcreator} from './components/Postcreator'
 import {Posteditor} from './components/Posteditor'
 import { useDispatch, useSelector } from 'react-redux'
@@ -26,13 +27,17 @@ function App() {
         const auth = useSelector(state => state.auth)
         const cookies = new Cookies();
 
+
+
         useEffect(()=>{
             async function getAuth(){
                 let token = auth.token?auth.token:document.URL.split('token=')[1]
                 if(!token){
                     return
                 }
-
+                if(auth.userId){
+                    return
+                }
                 const response = await axios.get(
                     'http://127.0.0.1:8000/me',
                     {
@@ -64,14 +69,26 @@ function App() {
                     <Link to='users'>Users</Link>
                     <Link to='posts'>Posts</Link>
                     <Routes>
-                        <Route path='/me' element={<Mypage/>}/>}/>
+                        <Route path='/me' element={
+                            <PrivateRoute>
+                                <Mypage/>
+                            </PrivateRoute>
+                        }/>
                         <Route path='/login' element={<Login/>}/>
                         <Route path='/users' element={<Users/>}/>
-                        <Route path='users/user/:uid' element={<User/>}/>
+                        <Route path='/users/user/:uid' element={<User/>}/>
                         <Route path='/posts' element={<Posts/>}/>
-                        <Route path='posts/post/:pid' element={<Post/>}/>
-                        <Route path='/newpost' element={<Postcreator/>}/>
-                        <Route path='/editpost/:pid' element={<Posteditor/>}/>
+                        <Route path='/posts/post/:pid' element={<Post/>}/>
+                        <Route path='/newpost' element={
+                            <PrivateRoute>
+                                <Postcreator/>
+                            </PrivateRoute>
+                        }/>
+                        <Route path='/editpost/:pid' element={
+                            <PrivateRoute>
+                                <Posteditor/>
+                            </PrivateRoute>
+                        }/>
                     </Routes>
                 </BrowserRouter>
         );
