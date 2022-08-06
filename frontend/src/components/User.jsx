@@ -12,11 +12,6 @@ export const User = (props) => {
         const [data, setData] = useState({})
 
         let {uid} = useParams()
-        if (uid == auth.userId){
-            return (
-                <Navigate to='/me'/>
-            )
-        }
 
         async function getUserData(){
             const userData = await  axios.get(

@@ -46,7 +46,6 @@ export const Post = (props) => {
                     <h2 style={{marginLeft:'30px'}}>
                         <Link to={'/users/user/'+owner_id}>{username} </Link>
                         rating : {rating}
-
                     </h2>
                 </div>
                 {auth.userId==owner_id?<Link to={'/editpost/'+PostData.data.PostData.id}>EditPost</Link>:null}

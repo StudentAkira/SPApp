@@ -10,6 +10,7 @@ export const Postcreator = () => {
     const [images, setImages] = useState([])
     const [article, setArticle] = useState('NO article')
     const [rerender, setRerender] = useState(true)
+    const [answer, setAnswer] = useState()
 
     function upload(){
         let MainTexts = []
@@ -41,11 +42,16 @@ export const Postcreator = () => {
                 'Authorization': 'Token '+auth.token
               }
             })
-            console.log(response)
+            console.log(response.data)
+            if(response.data.status != 'error'){
+                return (
+                    <Navigate to={response.data.redirect_to}/>
+                )
+            }
         }
         sendPost(formData)
 
-        console.log(MainTexts, ImagesLocations, images)
+
     }
 
     function resize(e){

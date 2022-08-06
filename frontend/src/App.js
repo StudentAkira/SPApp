@@ -28,39 +28,35 @@ function App() {
         const cookies = new Cookies();
 
 
-
-        useEffect(()=>{
-            async function getAuth(){
-                let token = auth.token?auth.token:document.URL.split('token=')[1]
-                if(!token){
-                    return
-                }
-                if(auth.userId){
-                    return
-                }
-                const response = await axios.get(
-                    'http://127.0.0.1:8000/me',
-                    {
-                            headers:
-                            {
-                                'Content-Type':'application/json',
-                                'Authorization': 'Token '+token
-                            }
-                    }
-                )
-                if (response.data.userId != -1){
-                    dispatch({type:'SET_ID', payload:response.data.userId})
-                    dispatch({type:'SET_AUTH', payload:true})
-                    dispatch({type:'SET_TOKEN', payload:token})
-                    cookies.set('token', token)
-                    cookies.set('userId', response.data.userId)
-                }
+        async function getAuth(){
+            let token = auth.token?auth.token:document.URL.split('token=')[1]
+            if(!token || auth.userId || auth.isAuthenticated){
+                setLoading(false)
+                return
             }
-            getAuth()
+            const response = await axios.get(
+                'http://127.0.0.1:8000/me',
+                {
+                        headers:
+                        {
+                            'Content-Type':'application/json',
+                            'Authorization': 'Token '+token
+                        }
+                }
+            )
+            if (response.data.userId != -1){
+                //dispatch({type:'SET_ID', payload:response.data.userId})
+                //dispatch({type:'SET_AUTH', payload:true})
+                //dispatch({type:'SET_TOKEN', payload:token})
+                cookies.set('token', token)
+                cookies.set('userId', response.data.userId)
+                window.location.reload()
+            }
             setLoading(false)
-        },[])
+        }
 
         if (loading){
+            getAuth()
             return <h1>LOADING</h1>
         }else{
             return (

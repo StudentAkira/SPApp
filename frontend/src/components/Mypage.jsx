@@ -33,15 +33,16 @@ export const Mypage = () => {
 
     function Logout(){
         dispatch({type:'SET_TOKEN', payload:undefined})
+        dispatch({type:'SET_ID', payload:undefined})
         dispatch({type:'SET_AUTH', payload:false})
-        dispatch({type:'SET_ID', payload:-1})
+
         cookies.remove('token')
         cookies.remove('userId')
         cookies.remove('csrftoken')
         cookies.remove('sessionid')
-        return (
-            <Navigate to='/login'/>
-        )
+
+        window.location.href = '/';
+
     }
 
     function Upload(){
@@ -70,7 +71,7 @@ export const Mypage = () => {
                     <div style={{fontSize:'25px', marginLeft:'20px'}}>{data.data.username}</div>
                     <button onClick={()=>{Upload()}}>Change Avatar</button>
                     <input type="file" onChange={(e)=>{setAvatar(e.target.files[0])}}/>
-                    <a onClick={()=>{Logout()}}>Logout</a>
+                    <button onClick={Logout}>Logout</button>
                 </div>
                 <Link to='/newpost'>Create new post</Link>
             </div>
