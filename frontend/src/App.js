@@ -45,11 +45,9 @@ function App() {
                 }
             )
             if (response.data.userId != -1){
-                //dispatch({type:'SET_ID', payload:response.data.userId})
-                //dispatch({type:'SET_AUTH', payload:true})
-                //dispatch({type:'SET_TOKEN', payload:token})
-                cookies.set('token', token)
-                cookies.set('userId', response.data.userId)
+                cookies.set('token', token, {maxAge:'100000000', domain:'127.0.0.1', path:'/'})
+                cookies.set('userId', response.data.userId, {maxAge:'100000000', domain:'127.0.0.1', path:'/'})
+
                 window.location.reload()
             }
             setLoading(false)

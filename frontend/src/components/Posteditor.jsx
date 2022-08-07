@@ -60,6 +60,8 @@ export const Posteditor = () => {
             setEditedstatus(response.data.status)
             if(response.data.status != 'error'){
                 setRedirect(response.data.redirect_to)
+            }else{
+                alert('oops something went wrong')
             }
             setLoading(false)
         }
@@ -72,6 +74,13 @@ export const Posteditor = () => {
             (document.getElementsByClassName('userstext'))[i].style.height = ((document.getElementsByClassName('userstext'))[i].scrollHeight)+"px";
         }
 
+    }
+
+    function start_size_textarea(){
+        for (var i = 0; i < (document.getElementsByClassName('userstext')).length; i++) {
+            (document.getElementsByClassName('userstext'))[i].style.height = "5px";
+            (document.getElementsByClassName('userstext'))[i].style.height = ((document.getElementsByClassName('userstext'))[i].scrollHeight)+"px";
+        }
     }
 
     useEffect(()=>{
@@ -97,6 +106,7 @@ export const Posteditor = () => {
             setText(PostData.data.PostData.text)
             setImages([...images,PostData.data.images])
         }
+        start_size_textarea()
         if(loading){
             getPostData()
         }

@@ -36,10 +36,10 @@ export const Mypage = () => {
         dispatch({type:'SET_ID', payload:undefined})
         dispatch({type:'SET_AUTH', payload:false})
 
-        cookies.remove('token')
-        cookies.remove('userId')
-        cookies.remove('csrftoken')
-        cookies.remove('sessionid')
+        cookies.set('token', ' ', {maxAge:'-100000000', domain:'127.0.0.1', path:'/'})
+        cookies.set('userId', ' ', {maxAge:'-100000000', domain:'127.0.0.1', path:'/'})
+        cookies.set('csrftoken', ' ', {maxAge:'-100000000', domain:'127.0.0.1', path:'/'})
+        cookies.set('sessionid', ' ', {maxAge:'-100000000', domain:'127.0.0.1', path:'/'})
 
         window.location.href = '/';
 

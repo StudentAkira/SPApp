@@ -11,6 +11,8 @@ export const Postcreator = () => {
     const [article, setArticle] = useState('NO article')
     const [rerender, setRerender] = useState(true)
     const [answer, setAnswer] = useState()
+    const [createstatus, setCreatestatus] = useState()
+    const [redirect, setRedirect] = useState('')
 
     function upload(){
         let MainTexts = []
@@ -42,11 +44,11 @@ export const Postcreator = () => {
                 'Authorization': 'Token '+auth.token
               }
             })
-            console.log(response.data)
+            setCreatestatus(response.data.status)
             if(response.data.status != 'error'){
-                return (
-                    <Navigate to={response.data.redirect_to}/>
-                )
+                setRedirect(response.data.redirect_to)
+            }else{
+                alert('oops something went wrong')
             }
         }
         sendPost(formData)
@@ -69,69 +71,74 @@ export const Postcreator = () => {
         }
     },[])
 
+    if(createstatus == 'success'){
+        return (
+            <Navigate to={redirect}/>
+        )
+    }else{
+        return (
+            <div>
+                <h1>POSTCREATOR</h1>
+                <div className="creator">
+                    <h3>Main content</h3>
+                        <button onClick={upload}>upload</button><br/><br/>
+                        <h2>Article</h2>
+                        <input type="text" onChange={(e)=>{
+                            setArticle(e.target.value)
+                        }}/><br/><br/>
 
-    return (
-        <div>
-            <h1>POSTCREATOR</h1>
-            <div className="creator">
-                <h3>Main content</h3>
-                    <button onClick={upload}>upload</button><br/><br/>
-                    <h2>Article</h2>
-                    <input type="text" onChange={(e)=>{
-                        setArticle(e.target.value)
-                    }}/><br/><br/>
-
-                <div>
-                    <textarea
-                        style={{resize:'none'}}
-                        onChange={(e)=>{resize(e)}}
-                        className='userstext'
-                        id='0'>
-                    </textarea><br/>
-
-                    <input
-                    type="file"
-                    onChange={(e)=>{
-                        if(images.length == 0){
-                            setImages([...images, e.target.files[0]])
-                        }else{
-                            images[0] = e.target.files[0]
-                            setRerender(!rerender)
-                        }
-                    }}/><br/>
                     <div>
-                    {images.map((image, index)=>{
-                        console.log(image)
-                        return (
-                            <div>
-                                <img
-                                  src={URL.createObjectURL(image)}
-                                  style={{width:'100px', height:'100px'}}
-                                /><br/>
+                        <textarea
+                            style={{resize:'none'}}
+                            onChange={(e)=>{resize(e)}}
+                            className='userstext'
+                            id='0'>
+                        </textarea><br/>
 
-                                <textarea
-                                    style={{resize:'none'}}
-                                    onChange={(e)=>{resize(e)}}
-                                    className='userstext'>
-                                </textarea><br/>
-                                <input
-                                style={{display:index>=3?'none':'block'}}
-                                type="file"
-                                onChange={(e)=>{
-                                    if(images.length == 0){
-                                        setImages([...images, e.target.files[0]])
-                                    }else{
-                                        images[index+1] = e.target.files[0]
-                                        setRerender(!rerender)
-                                    }
+                        <input
+                        type="file"
+                        onChange={(e)=>{
+                            if(images.length == 0){
+                                setImages([...images, e.target.files[0]])
+                            }else{
+                                images[0] = e.target.files[0]
+                                setRerender(!rerender)
+                            }
+                        }}/><br/>
+                        <div>
+                        {images.map((image, index)=>{
+                            console.log(image)
+                            return (
+                                <div>
+                                    <img
+                                      src={URL.createObjectURL(image)}
+                                      style={{width:'100px', height:'100px'}}
+                                    /><br/>
 
-                                }}/><br/>
-                            </div>
-                        )
-                    })}
+                                    <textarea
+                                        style={{resize:'none'}}
+                                        onChange={(e)=>{resize(e)}}
+                                        className='userstext'>
+                                    </textarea><br/>
+                                    <input
+                                    style={{display:index>=3?'none':'block'}}
+                                    type="file"
+                                    onChange={(e)=>{
+                                        if(images.length == 0){
+                                            setImages([...images, e.target.files[0]])
+                                        }else{
+                                            images[index+1] = e.target.files[0]
+                                            setRerender(!rerender)
+                                        }
+
+                                    }}/><br/>
+                                </div>
+                            )
+                        })}
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    )
+        )
+    }
 }

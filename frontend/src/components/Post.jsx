@@ -10,6 +10,9 @@ export const Post = (props) => {
         const auth = useSelector(state => state.auth)
         const [isloading, setLoading] = useState(true)
         const [PostData, setPostData] = useState({})
+        const [answer, setAnswer] = useState()
+        const [redirect, setRedirect] = useState('')
+        const [total_likes, setTotal_likes] = useState(false)
 
         var UserExists = true
 
@@ -21,12 +24,65 @@ export const Post = (props) => {
             )
             setLoading(false)
             setPostData(PostData)
+            setTotal_likes(PostData.data.PostData.likes)
         }
+
+        async function deletePost(){
+            const response = await  axios.get(
+                'http://127.0.0.1:8000/deletepost/'+pid+'/',
+                {
+                    headers:
+                    {
+                        'Content-Type':'application/json',
+                        'Authorization': 'Token '+auth.token
+                    }
+                }
+            )
+            setAnswer(response.data.status)
+            if(response.data.status != 'error'){
+                setRedirect(response.data.redirect_to)
+            }else{
+                alert(response.data.message)
+            }
+        }
+
+        async function Like(){
+            const response = await  axios.get(
+                'http://127.0.0.1:8000/like/'+pid+'/',
+                {
+                    headers:
+                    {
+                        'Content-Type':'application/json',
+                        'Authorization': 'Token '+auth.token
+                    }
+                }
+            )
+        }
+
+        useEffect(()=>{
+            async function Like(){
+                const response = await  axios.get(
+                    'http://127.0.0.1:8000/like/'+pid+'/',
+                    {
+                        headers:
+                        {
+                            'Content-Type':'application/json',
+                            'Authorization': 'Token '+auth.token
+                        }
+                    }
+                )
+            }
+        },[])
 
         if(isloading){
             getPostData()
             return <h1>LOADING</h1>
         }else{
+            if(!PostData.data.OwnerData || answer == 'success'){
+                return (
+                    <Navigate to='/me'/>
+                )
+            }
             UserExists = PostData.data.OwnerData.exists
             let owner_id = UserExists?PostData.data.OwnerData.id:-1
             let avatar_url = UserExists?'http://127.0.0.1:8000/media/'+PostData.data.OwnerData.avatar:''
@@ -49,9 +105,12 @@ export const Post = (props) => {
                     </h2>
                 </div>
                 {auth.userId==owner_id?<Link to={'/editpost/'+PostData.data.PostData.id}>EditPost</Link>:null}
+                {auth.userId==owner_id?<button onClick={deletePost}>DELETE POST</button>:null}
+                {auth.userId!=owner_id?<button onClick={Like}>Like</button>:null}
+                <div>Likes : {total_likes}</div>
                 <hr style={{display: UserExists?'auto':'none'}}/>
-                <h2>{article}</h2><br/>
-                <div style={{width:'60%', margin:'auto',}}>
+                <h2>{article?article:'No article'}</h2><br/>
+                <div style={{width:'60%', margin:'auto', textAlign:'center', wordWrap: 'break-word'}}>
                     {images.map((image_item, index)=>{
                         let tmp = previous
                         next = image_item[1]
@@ -69,7 +128,7 @@ export const Post = (props) => {
                             </div>
                         );
                     })}
-                    <p style={{margin:'auto', textAlign:'center'}}>{text.slice(previous, text.length)}</p>
+                    <p>{text.slice(previous, text.length)}</p>
                 </div>
             </div>
             );

@@ -63,9 +63,13 @@ export const Posts = () => {
 
     return (
         <div>
-            <h1>{posts.map((post, index) =>
-            <Link to={'post/'+post[0].id} key={index+1}>{post[0].article}<br/></Link>
-            )}</h1>
+            <h1>{posts.map((post, index) => {
+                return(
+                    <div>
+                        <Link to={'post/'+post[0].id} key={index+1}>{post[0].article.length>0?post[0].article:'No article'}</Link><br/>
+                    </div>
+                )
+            })}</h1>
             <Loading visible={loading}/>
         </div>
     );

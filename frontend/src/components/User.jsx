@@ -25,6 +25,11 @@ export const User = (props) => {
             getUserData()
             return <h1>LOADING</h1>
         }else{
+            if(auth.userId == data.data.id){
+                return (
+                    <Navigate to='/me'/>
+                )
+            }
             let avatar_url = 'http://127.0.0.1:8000/media/'+data.data.avatar
             return (
             <div style={{display:'flex', marginTop:'20px'}}>
