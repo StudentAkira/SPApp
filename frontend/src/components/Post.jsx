@@ -13,18 +13,29 @@ export const Post = (props) => {
         const [answer, setAnswer] = useState()
         const [redirect, setRedirect] = useState('')
         const [total_likes, setTotal_likes] = useState(false)
+        const [displayLike, setDisplayLike] = useState('block')
+        const [islike, setIslike] = useState(false)
+        const [added, setAdded] = useState(false)
 
         var UserExists = true
 
         const {pid} = useParams()
 
+        const headers = auth.token?{headers:
+        {
+            'Content-Type':'application/json',
+            'Authorization': 'Token '+auth.token
+        }}:null
+
         async function getPostData(){
             const PostData = await  axios.get(
                 'http://127.0.0.1:8000/post/'+pid+'/',
+                headers
             )
             setLoading(false)
             setPostData(PostData)
             setTotal_likes(PostData.data.PostData.likes)
+            setIslike(PostData.data.isliked)
         }
 
         async function deletePost(){
@@ -47,6 +58,8 @@ export const Post = (props) => {
         }
 
         async function Like(){
+            setDisplayLike('none')
+            setAdded(!added)
             const response = await  axios.get(
                 'http://127.0.0.1:8000/like/'+pid+'/',
                 {
@@ -57,22 +70,8 @@ export const Post = (props) => {
                     }
                 }
             )
+            setDisplayLike('block')
         }
-
-        useEffect(()=>{
-            async function Like(){
-                const response = await  axios.get(
-                    'http://127.0.0.1:8000/like/'+pid+'/',
-                    {
-                        headers:
-                        {
-                            'Content-Type':'application/json',
-                            'Authorization': 'Token '+auth.token
-                        }
-                    }
-                )
-            }
-        },[])
 
         if(isloading){
             getPostData()
@@ -106,8 +105,12 @@ export const Post = (props) => {
                 </div>
                 {auth.userId==owner_id?<Link to={'/editpost/'+PostData.data.PostData.id}>EditPost</Link>:null}
                 {auth.userId==owner_id?<button onClick={deletePost}>DELETE POST</button>:null}
-                {auth.userId!=owner_id?<button onClick={Like}>Like</button>:null}
-                <div>Likes : {total_likes}</div>
+                {((auth.userId!=owner_id && auth.isAuthenticated) && (Boolean(auth.userId) && Boolean(auth.token)))?<button style={{display:displayLike}} onClick={Like}>Like</button>:null}
+                <div>Likes : {
+
+                    islike?added?total_likes-1:total_likes:added?total_likes+1:total_likes
+
+                    }</div>
                 <hr style={{display: UserExists?'auto':'none'}}/>
                 <h2>{article?article:'No article'}</h2><br/>
                 <div style={{width:'60%', margin:'auto', textAlign:'center', wordWrap: 'break-word'}}>
